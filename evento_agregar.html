@@ -1,0 +1,83 @@
+<div class="pages">
+    <div data-page="nuevo_producto" class="page no-toolbar no-navbar">
+        <div class="page-content" style="background: url('images/bgbodytest.png') !important ;">
+
+            <div class="navbarpages">
+                <div class="nav_left_button"><a href="menu.html"><img src="images/icons/white/back.png" alt=""
+                                                                      title=""/></a></div>
+                <div class="nav_right_button"><a href="index.html"><img src="images/icons/white/home.png" alt=""
+                                                                       title=""/></a></div>
+            </div>
+            <div id="pages_maincontent">
+
+                <h2 class="page_title">Agregar evento</h2>
+
+                <div class="page_content">
+
+                    <div class="content-block inset" style="background-color:#fff !important;">
+                        <!-- About Popup -->
+                        <div class="popup-overlay"></div>
+                        <div class="popup popup-paises">
+                            <div class="content-block">
+                                <p>Cambiar País</p>
+                                <ul class="posts" id="lista_paises_popup" style="background-color:#ECECEC !important;">
+                                </ul>
+                                <div class="close_loginpopup_button"><a href="#" class="close-popup"><img
+                                        src="images/icons/white/menu_close.png" alt="" title=""/></a></div>
+                            </div>
+                        </div>
+
+
+                        <ul class="posts" id="pais_seleccionado_popup">
+                        </ul>
+                        <blockquote>
+                            Usted va a agregar un evento nuevo.
+                        </blockquote>
+
+                        <input type="file" id="imageUpload" onchange="getImage();" accept="image/*">
+                        <button id="photoButton" onclick="document.getElementById('imageUpload').click(); return false;">
+                        </button>
+
+                        <div class="contactform">
+                            <form id="agrega-producto" name="agrega-producto" method="POST" class="ajax-submit">
+
+                                <label>Categoría:</label>
+                                <select name="val_categoria" class="form_select" id="val_categoria" required>
+                                </select>
+
+                                <label>Nombre:</label>
+                                <input type="text" id="producto" name="producto" value="" class="form_input" required/>
+
+                                <label>Descripción:</label>
+                                <textarea id="descripcion" name="descripcion" class="form_textarea" rows="" cols=""
+                                          required></textarea>
+
+                                <label class='mo'><b>Ubicación:</b></label>
+                                <!-- input type="text" id="location" name="location" maxlength="128" placeholder="Lugar del evento"></input -->
+                                <div id="map" style="color: white; width: 100%; height: 250px; border: 1px solid #AAA;"></div>
+
+                                <input type="button" onClick="subirProducto();" name="submitProducto"
+                                       class="form_submit" id="submitProducto" value="Agregar"/>
+                            </form>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+if(navigator.onLine==false){
+    $(".mo, #map").hide();
+}
+    if (logged_user_ask() == false)
+        console.log("What???");
+</script>

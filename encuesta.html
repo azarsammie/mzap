@@ -1,0 +1,213 @@
+<link href="style.css" rel="stylesheet">
+<style>
+    /*   * {
+           box-sizing: border-box;
+       }
+
+       body {
+           background-color: #ffffff;
+           font-family: Raleway;
+       }*/
+
+    /*#myform {*/
+    /*    background-color: #f1f1f1;*/
+    /*    margin: 20px auto;*/
+    /*    font-family: Arial;*/
+    /*    padding: 20px;*/
+    /*    width: 90%;*/
+    /*    min-width: 300px;*/
+    /*}*/
+
+    /*
+        h1 {
+            text-align: left;
+        }
+
+        h2 {
+            text-align: left;
+        }
+
+        input, select {
+            padding: 10px;
+            width: 100%;
+            font-size: 17px;
+            font-family: Raleway;
+            border: 1px solid #aaaaaa;
+        }
+
+        !* Mark input boxes that gets an error on validation: *!
+        input.invalid {
+            background-color: #ffdddd;
+        }
+    */
+    /* Hide all steps by default: */
+    .tab_s {
+        display: none;
+        background-color: #f1f1f1;
+        margin: 20px auto;
+        font-family: Arial;
+        padding: 20px;
+        width: 90%;
+        min-width: 300px;
+        color: black;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-family: Arial;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    #prevBtn {
+        background-color: #bbbbbb;
+    }
+
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.5;
+    }
+
+    .step.active {
+        opacity: 1;
+    }
+
+    /* Mark the steps that are finished and valid: */
+    .step.finish {
+        background-color: #4CAF50;
+    }
+</style>
+<div class="pages">
+    <div class="page no-toolbar no-navbar" data-page="encuesta">
+        <div class="page-content" style="background: url('images/bgbodytest.png') !important ;">
+
+            <div class="navbarpages">
+                <div class="nav_left_button"><a class="back" href="#"><img alt="" src="images/icons/white/back.png"
+                                                                           title=""/></a></div>
+                <div class="nav_right_button"><a href="menu.html"><img alt="" src="images/icons/white/menu.png"
+                                                                       title=""/></a></div>
+            </div>
+            <div id="pages_maincontent">
+<!--                <h2 class="page_title">Encuesta</h2>-->
+                <div class="page_content" id="encuesta"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentTab = 0; // Current tab is set to be the first tab (0)
+    showTab(currentTab); // Display the current tab
+
+    function showTab(n) {
+        // This function will display the specified tab of the form...
+        var x = document.getElementsByClassName("tab_s");
+        x[n].style.display = "block";
+        //... and fix the Previous/Next buttons:
+        if (n == 0) {
+            document.getElementById("prevBtn").style.display = "none";
+        } else {
+            document.getElementById("prevBtn").style.display = "inline";
+        }
+        if (n == (x.length - 1)) {
+            //document.getElementById("nextBtn").innerHTML = "Predicción IA";
+            document.getElementById("nextBtn").innerHTML = "Finalizar";
+        } else {
+            document.getElementById("nextBtn").innerHTML = "Siguiente";
+        }
+        // window.scrollTo(0, 0);
+        window.scroll(0, 0);
+        //... and run a function that will display the correct step indicator:
+        fixStepIndicator(n)
+    }
+
+    function nextPrev(n) {
+        // This function will figure out which tab to display
+        let x = document.getElementsByClassName("tab_s");
+        // Exit the function if any field in the current tab is invalid:
+        if (n == 1 && !validateForm()) return false;
+        // Hide the current tab:
+        x[currentTab].style.display = "none";
+        // Increase or decrease the current tab by 1:
+        currentTab = currentTab + n;
+        // if you have reached the end of the form...
+        // console.log(currentTab);
+        // console.log(x.length);
+        if (currentTab >= x.length) {
+            // ... the form gets submitted:
+            /*var formData = {};
+            $(form).find("input[name]").each(function (index, node) {
+                formData[node.name] = node.value;
+            });
+            $.post(url, formData).done(function (data) {
+                alert(data);
+            });*/
+
+            // resetear formulario
+            $('#myForm').trigger("reset");
+            //$('#myForm')[0].reset();
+
+            // var validator = $( "#myform" ).validate();
+            // validator.resetForm();
+
+            // document.getElementById("myForm").reset();
+
+            currentTab = 0;
+            showTab(currentTab);
+
+            // myApp.closeModal('.popup-encuesta');
+            return false;
+        }
+        // Otherwise, display the correct tab:
+        showTab(currentTab);
+        window.scroll(0, 0);
+    }
+
+    function validateForm() {
+        // This function deals with validation of the form fields
+        let x, y, i, valid = true;
+        x = document.getElementsByClassName("tab_s");
+        y = x[currentTab].getElementsByTagName("input");
+        // A loop that checks every input field in the current tab:
+        for (i = 0; i < y.length; i++) {
+            // If a field is empty...
+            if (y[i].value == "") {
+                // add an "invalid" class to the field:
+                y[i].className += " invalid";
+                // and set the current valid status to false
+                valid = false;
+            }
+        }
+        // If the valid status is true, mark the step as finished and valid:
+        if (valid) {
+            document.getElementsByClassName("step")[currentTab].className += " finish";
+        }
+
+        return valid; // return the valid status
+    }
+
+    function fixStepIndicator(n) {
+        // This function removes the "active" class of all steps...
+        let i, x = document.getElementsByClassName("step");
+        for (i = 0; i < x.length; i++) {
+            x[i].className = x[i].className.replace(" active", "");
+        }
+        //... and adds the "active" class on the current step:
+        x[n].className += " active";
+    }
+
+</script>

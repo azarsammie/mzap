@@ -1,0 +1,892 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Covid-19</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: #ffffff;
+        font-family: Raleway;
+    }
+
+    #myform {
+        background-color: #f1f1f1;
+        margin: 20px auto;
+        font-family: Raleway;
+        padding: 20px;
+        width: 90%;
+        min-width: 300px;
+    }
+
+    h1 {
+        text-align: left;
+    }
+
+    h2 {
+        text-align: left;
+    }
+
+    input, select {
+        padding: 10px;
+        width: 100%;
+        font-size: 17px;
+        font-family: Raleway;
+        border: 1px solid #aaaaaa;
+    }
+
+    /* Mark input boxes that gets an error on validation: */
+    input.invalid {
+        background-color: #ffdddd;
+    }
+
+    /* Hide all steps by default: */
+    .tab {
+        display: none;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 17px;
+        font-family: Raleway;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    #prevBtn {
+        background-color: #bbbbbb;
+    }
+
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.5;
+    }
+
+    .step.active {
+        opacity: 1;
+    }
+
+    /* Mark the steps that are finished and valid: */
+    .step.finish {
+        background-color: #4CAF50;
+    }
+
+    .buttonUrl {
+        background-color: #1c87c9;
+        border: none;
+        color: white;
+        padding: 20px 34px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+</style>
+
+<body>
+<h1><center>Modelo predictivo para detección de coronavirus basado en Inteligencia Artificial  y en puntajes tomados de la medicina basada en la evidencia MBE </h1> </center>
+<p><center>Se advierte que el presente instrumento está aún  en fase de prueba y por tanto no tiene la suficiente validez científica, pero puede al menos orientarle sobre su estado de salud frente a esta Pandemia. Versión 8.0 26-3-2020</p>
+<p>Este formulario es <b>TOTALMENTE ANONIMO </b>, no conservamos ninguna información </p>
+<p>El resultado de esta evaluación es SOLAMENTE UNA GUIA y de NINGUNA forma sustituye la prueba sanguínea PCR o las pruebas cualitativas por anticuerpos</p></center>
+
+<div style="text-align: center;">
+    <a href="https://www.juanbarrios.com/triage-del-covid-19/" class="buttonUrl">Fundamento teórico</a>
+    <a href="https://www.juanbarrios.com/triage-del-covid-19/" class="buttonUrl">Quiénes somos?</a>
+    <a href="https://www.ministeriodesalud.go.cr/index.php/material-educativo/influenza-1/coronavirus?sort=title" class="buttonUrl">Consejos Coronavirus: (Ministerio de Salud)</a>
+    <a href="https://www.ccss.sa.cr/web/coronavirus/" class="buttonUrl">Coronavirus (CCSS)</a>
+</div>
+
+<!-- form id="myform" action="formulario_2.html" method="POST" -->
+<!-- form id="myform" action="/action_page.php" method="POST"  -->
+<form action="result" id="myform" method="POST">
+    <div class="tab"><h2>PERFIL DEL PACIENTE</h2>
+        <p>Sexo del paciente
+            <select id="sexo" name="sexo">
+                <option value="0,1">Hombre</option>
+                <option value="0,2">Mujer</option>
+            </select>
+        </p>
+
+        <p>En qué grupo de edad se encuentra usted ?
+            <select id="edad" name="edad">
+                <option value="0,1">De 0 a menos 10</option>
+                <option value="0,2">De 10 a menos de 20</option>
+                <option value="0,3">De 20 a menos de 30</option>
+                <option value="0,4">De 30 a menos de 40</option>
+                <option value="1,5">De 40 a menos de 50</option>
+                <option value="2,6">De 50 a menos de 60</option>
+                <option value="3,7">De 60 a menos de 70</option>
+                <option value="4,8">De 70 a menos de 80</option>
+                <option value="5,9">De 80 a menos de 90</option>
+                <option value="5,0">De 90 y más</option>
+            </select>
+        </p>
+
+        <p>Etnia
+            <select id="etnia" name="etnia">
+                <option value="0,1">Blanco</option>
+                <option value="0,2">Mestizo</option>
+                <option value="0,3">Afrodescendiente</option>
+                <option value="0,4">Otros</option>
+            </select>
+        </p>
+        <p>Condición socioeconómica
+            <select id="condicion_economica" name="condicion_economica">
+                <option value="0,3">Clase Media</option>
+                <option value="0,1">Situación de pobreza</option>
+                <option value="0,2">Baja</option>
+                <option value="0,4">Clase Alta</option>
+                <option value="1,5">Clase muy alta</option>
+            </select>
+        </p>
+
+        <p>Realiza usted ejercicio ?
+            <select id="ejercicio" name="ejercicio">
+                <option value="0,3">1 vez por semana</option>
+                <option value="0,2">2 veces por semana</option>
+                <option value="0,1">Más de 3 veces a la semana</option>
+                <option value="2,4">No hace ejercicio</option>
+            </select>
+        </p>
+
+        <p> Cuál es su Indice de masa corporal (de acuerdo a las tablas)
+            <select id="imc" name="imc">
+                <option value="0,2">Peso Normal</option>
+                <option value="1,1">Bajo Peso</option>
+                <option value="1,3">Pre-Obesidad</option>
+                <option value="2,4">Obesidad G 1</option>
+                <option value="3,5">Obesidad G 2</option>
+                <option value="3,6">Obesidad G 3</option>
+            </select>
+        </p>
+
+        <p>Fuma usted ?
+            <select id="tabaquismo" name="tabaquismo">
+                <option value="0,4">Nunca he fumado</option>
+                <option value="3,1">Si fumo y mucho</option>
+                <option value="2,2">Si fumo, pero de forma ocasional</option>
+                <option value="1,3">Antes si, pero actualmente no fumo</option>
+            </select>
+        </p>
+
+        <p>Consume bebidas alcohólicas ?
+            <select id="alcoholismo" name="alcoholismo">
+                <option value="0,4">Nunca he tomado</option>
+                <option value="2,1">Si, con mucha frecuencia</option>
+                <option value="1,2">Si, pero de forma ocasional</option>
+                <option value="0,3">Antes si, actualmente no tomo</option>
+
+            </select>
+        </p>
+    </div>
+
+    <div class="tab"><h2>HISTORIAL MÉDICO</h2>
+        <p>Padece usted de hipertensión arterial (Presión Alta) ?
+            <select id="hipertension" name="hipertension">
+                <option value="0,2">No</option>
+                <option value="3,1">Si</option>
+                <option value="0,3">No lo sabe</option>
+            </select>
+        </p>
+        <p>Recibe usted algún tratamiento para la Hipertensión ?
+            <select id="hipertension_trat" name="hipertension_trat">
+                <option value="0,3">NO APLICA</option>
+                <option value="1,2">No</option>
+                <option value="0,1">Si</option>
+                <option value="1,2">No</option>
+
+            </select>
+        </p>
+
+        <p>Qué tratamiento sigue para su hipertensión ?
+            <select id="hipertension_trat_tipo" name="hipertension_trat_tipo">
+                <option value="0,8">NO APLICA</option>
+                <option value="0,1">Enalapril</option>
+                <option value="0,2">Enalapril con Hidroclorotiazida</option>
+                <option value="0,3">Amlodipina</option>
+                <option value="0,4">Ibersartán ó similares</option>
+                <option value="0,5">Ibersartán + Hidroclorotiazida</option>
+                <option value="0,6">Otros Productos naturales o sólo dieta)</option>
+                <option value="0,7">Sin tratamiento</option>
+
+            </select>
+        </p>
+
+        <p>Padece usted de Diabetes ( Azúcar en la sangre) ?
+            <select id="diabetes" name="diabetes">
+                <option value="0,2">No</option>
+                <option value="2,1">Si</option>
+
+                <option value="0,3">No lo sabe</option>
+            </select>
+        </p>
+        <p>Recibe algún tratamiento para la Diabetes ?
+            <select id="diabetes_trat" name="diabetes_trat">
+                <option value="0,3">NO APLICA</option>
+                <option value="1,2">No</option>
+                <option value="0,1">Si</option>
+
+
+            </select>
+        </p>
+
+        <p>Qué tratamiento sigue para su Diabetes ?
+            <select id="diabetes_trat_tipo" name="diabetes_trat_tipo">
+                <option value="0,6">NO APLICA</option>
+                <option value="0,1">Solo pastillas ( Hipoglicemiantes orales)</option>
+                <option value="0,2">Insulina</option>
+                <option value="0,3">Insulina + Pastillas</option>
+                <option value="0,4">Otros (Productos Naturales)</option>
+                <option value="0,5">Sin tratamiento</option>
+
+            </select>
+        </p>
+
+        <p>Padece usted de Enfermedades pulmonares crónicas ( Enfisema, Bronquitis, Asma) ?
+            <select id="pulmonares" name="pulmonares">
+                <option value="0,2">No</option>
+                <option value="5,1">Si</option>
+
+                <option value="0,3">No lo sabe</option>
+            </select>
+        </p>
+
+        <p>Recibe algún tratamiento para su Enfermedad Pulmonar ?
+            <select id="pulmonares_trat" name="pulmonares_trat">
+                <option value="0,3">NO APLICA</option>
+                <option value="2,2">No</option>
+                <option value="0,1">Si</option>
+
+            </select>
+        </p>
+
+        <p>Qué tratamiento sigue para su Enfermedad Pulmonar ?
+            <select id="pulmonares_trat_tipo" name="pulmonares_trat_tipo">
+                <option value="0,5">NO APLICA</option>
+                <option value="0,1">Broncodilatadores</option>
+                <option value="0,2">Broncodilatadores +esteroides</option>
+                <option value="0,3">Remedios caseros u otros</option>
+                <option value="0,4">No recibe tratamiento</option>
+
+            </select>
+        </p>
+
+        <p>Padece usted o padeció de algún tipo de Cáncer ?
+            <select id="cancer" name="cancer">
+                <option value="0,2">No</option>
+                <option value="1,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+        <p>Recibe algún tratamiento para el Cáncer ?
+            <select id="cancer_trat" name="cancer_trat">
+                <option value="0,4">NO APLICA</option>
+                <option value="2,1">Si</option>
+                <option value="0,2">No</option>
+                <option value="0,3">Se encuentra en remision de la enfermedad</option>
+            </select>
+        </p>
+
+        <p>Qué tratamiento sigue o siguió para el Cáncer ?
+            <select id="cancer_trat_tipo" name="cancer_trat_tipo">
+                <option value="0,8">NO APLICA</option>
+                <option value="1,1">Quimioterapia</option>
+                <option value="1,2">Radioterapia</option>
+                <option value="2,3">Cirugía</option>
+                <option value="2,4">Cirugía mas Quimioterapia</option>
+                <option value="2,5">Cirugía mas Quimioterapia mas Radioterapia</option>
+                <option value="0,6">Otros tratamientos</option>
+                <option value="0,7">Sin tratamiento</option>
+
+            </select>
+        </p>
+
+        <p>Padece usted de alguna Enfermedad Cardíaca (Cardiopatía) ?
+            <select id="cardiopatias" name="cardiopatias">
+                <option value="0,2">No</option>
+                <option value="2,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+        <p>Recibe algún tratamiento para la Cardiopatía ?
+            <select id="cardiopatias_trat" name="cardiopatias_trat">
+                <option value="0,3">NO APLICA</option>
+                <option value="1,2">No</option>
+                <option value="0,1">Si</option>
+
+
+            </select>
+        </p>
+
+        <p>Qué tratamiento sigue para su cardiopatía ?
+            <select id="cardiopatias_trat_tipo" name="cardiopatias_trat_tipo">
+                <option value="0,6">NO APLICA</option>
+                <option value="0,1">Drogas anticoagulantes</option>
+                <option value="0,2">Drogas antiarritmicas</option>
+                <option value="0,3">Aspirina</option>
+                <option value="0,4">Otros tipo de medicamentos (vasodilatadores)</option>
+                <option value="0,5">Sin tratamiento</option>
+
+            </select>
+        </p>
+
+        <p>Padece usted de alguna Enfermedad Renal ?
+            <select id="renales" name="renales">
+                <option value="0,2">No</option>
+                <option value="1,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+        <p>Padece usted de alguna Enfermedad del Hígado ?
+            <select id="hepaticas" name="hepaticas">
+                <option value="0,2">No</option>
+                <option value="1,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+        <p>Padece usted de alguna Enfermedad Psiquiátrica ?
+            <select id="psiquiatricas" name="psiquiatricas">
+                <option value="0,2">No</option>
+                <option value="1,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+        <p>Padece usted de alguna Enfermedad que afecta su sistema inmunológico ?
+            <select id="inmunologico" name="inmunologico">
+                <option value="0,2">No</option>
+                <option value="2,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+
+        <p>Ha sido vacunado contra la gripe en el último año ?
+            <select id="vacunado" name="vacunado">
+                <option value="2,2">No</option>
+                <option value="0,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+    </div>
+
+    <div class="tab" id="tab2"><h2>ANÁLISIS EPIDEMIOLÓGICO</h2>
+        <p>Ha tenido contacto previo con personas con síntomas sospechosos en el último mes ?
+            <select id="contacto_previo_sintomaticos" name="contacto_previo_sintomaticos">
+                <option value="0,2">No</option>
+                <option value="2,1">Si</option>
+
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+        <p>La persona con la que tuvo usted contacto, falleció ?
+            <select id="contacto_previo_fallecido" name="contacto_previo_fallecido">
+                <option value="0,4">NO APLICA</option>
+                <option value="4,1">Si</option>
+                <option value="0,2">No</option>
+                <option value="0,3">No sabe</option>
+
+            </select>
+        </p>
+
+        <p>En el último mes ha asistido a una persona mayor sin síntomas, que luego resultó contagiada ?
+
+            <select id="ayuda_sano" name="ayuda_sano">
+                <option value="0,2">No</option>
+                <option value="2,1">Si</option>
+                <option value="0,3">No sabe</option>
+            </select>
+        </p>
+
+        <p>En el último mes ha asistido o visitado a una persona con síntomas ?
+            <select id="ayuda_sintomatico" name="ayuda_sintomatico">
+                <option value="0,2">No</option>
+                <option value="3,1">Si</option>
+
+                <option value="0,3">No está seguro</option>
+            </select>
+        </p>
+
+        <p>La persona a la que usted ayudó, Actualmente cómo se encuentra ?
+            <select id="ayuda_estado" name="ayuda_estado">
+                <option value="0,5">No ayudó a ninguna persona</option>
+                <option value="0,1">Circula libremente por la calle</option>
+                <option value="1,2">Está en cuarentena en su casa pero sin sintomas</option>
+                <option value="2,3">Está hospitalizado</option>
+                <option value="3,4">Falleció</option>
+
+            </select>
+        </p>
+
+        <p>A la persona a que usted ayudó o visitó, permaneció con ella más de 15 minutos ?
+            <select id="ayuda_masde15min" name="ayuda_masde15min">
+                <option value="0,3">NO APLICA</option>
+                <option value="0,2">No</option>
+                <option value="2,1">Si</option>
+
+            </select>
+        </p>
+
+
+        <p>Cuando visitó o asistió a esa persona, usted utilizó algún tipo de protección (mascarilla, guantes, otros) ?
+            <select id="ayuda_proteccion" name="ayuda_proteccion">
+                <option value="0,4">NO APLICA</option>
+                <option value="2,2">No</option>
+                <option value="0,1">Si</option>
+
+                <option value="1,3">No sabe</option>
+
+            </select>
+        </p>
+
+
+        <p>Antes de presentar usted síntomas. Donde permanecía ?
+            <select id="antes_sintomas" name="antes_sintomas">
+                <option value="0,4">NO APLICA</option>
+                <option value="0,1">Estaba usualmente sólo en la casa</option>
+                <option value="1,2">Estaba con grupos pequeños de personas</option>
+                <option value="2,3">Se relacionaba con grupos grandes de personas</option>
+            </select>
+        </p>
+
+
+        <p>Algún miembro de su casa o de su entorno ha resultado positivo en las pruebas por Covid19 ?
+            <select id="otros_miembros" name="otros_miembros">
+                <option value="0,3">Ninguno</option>
+                <option value="2,1">Si, 1 miembro</option>
+                <option value="3,2">Si, 2 o más personas están positivos</option>
+
+            </select>
+        </p>
+
+        <p>Hay otros casos en su barrio o comunidad que hayan resultado positivos ?
+            <select id="otros_comunidad" name="otros_comunidad">
+                <option value="0,4"> No sé si hay casos</option>
+                <option value="0,1">Si, pero hay pocos casos</option>
+                <option value="2,2">Si, hay muchos casos</option>
+                <option value="0,3"> No hay casos</option>
+
+            </select>
+        </p>
+
+        <p>Vive usted sólo ó acompañado ?
+            <select id="vive_solo" name="vive_solo">
+                <option value="0,2">No, vivo con la familia de 3 ó menos miembros</option>
+                <option value="0,1">Si, vivo sólo</option>
+                <option value="1,3">No, vivo con la familia somos más de 3 en la casa</option>
+                <option value="2,4">No, vivo en un lugar con muchísimas personas</option>
+            </select>
+        </p>
+
+        <p>Regresó usted de un viaje al exterior recientemente ?
+            <select id="regreso_viaje" name="regreso_viaje">
+                <option value="0,4">No he viajado</option>
+                <option value="3,1">Hace una semana</option>
+                <option value="2,2">Hace mas de una semana pero menos de 1 mes</option>
+                <option value="1,3">Hace mas de un mes</option>
+
+            </select>
+        </p>
+
+        <p>Si usted tiene síntomas podría calcular hace cuántos días pudo haberse contagiado ? (Período de incubación)
+            <select id="incubacion" name="incubacion">
+                <option value="0,5">NO tiene síntomas,  y por tanto NO APLICA</option>
+                <option value="0,1">De 1 a 4 dias</option>
+                <option value="2,2">De 4 a 10 dias</option>
+                <option value="0,3">De 10 a 14 dias</option>
+                <option value="0,4">Desconocido</option>
+
+            </select>
+        </p>
+
+        <p>Ha tenido síntomas que le hagan sospechar de que usted, podría estar contagiado ?
+            <select id="sintomas" name="sintomas">
+                <option value="0,3">No está seguro</option>
+                <option value="4,1">Si</option>
+                <option value="5,2">No</option>
+
+            </select>
+        </p>
+
+        <p>Ha tenido Tos ?
+            <select id="sintomas_tos" name="sintomas_tos">
+
+                <option value="0,4">No, no he tenido</option>
+                <option value="2,1">Si, pero muy leve</option>
+                <option value="3,2">Si, moderada</option>
+                <option value="4,3">Si, severa</option>
+
+            </select>
+        </p>
+
+        <p>Ha tenido fiebre ?
+            <select id="sintomas_fiebre" name="sintomas_fiebre">
+                <option value="0,4">No, no he tenido</option>
+                <option value="2,1"> Si, pero muy leve menos de 38 grados</option>
+                <option value="3,2">Si, moderada de 38 a 40 grados</option>
+                <option value="4,3">Si, severa, mas de 40</option>
+
+            </select>
+        </p>
+
+        <p>Tiene Dificultad para respirar ?
+            <select id="sintomas_dificultad_respirar" name="sintomas_dificultad_respirar">
+                <option value="0,4">No, no he tenido</option>
+                <option value="2,1"> Si, pero muy leve</option>
+                <option value="3,2">Si, moderada</option>
+                <option value="4,3">Si, severa</option>
+
+            </select>
+        </p>
+
+        <p>Tiene dolor de Garganta ?
+            <select id="sintomas_garganta" name="sintomas_garganta">
+                <option value="0,4">No, no he tenido</option>
+                <option value="1,1"> Si, pero muy leve</option>
+                <option value="2,2">Si, moderado</option>
+                <option value="3,3">Si, severo</option>
+
+            </select>
+        </p>
+
+        <p>Tiene algún brote nuevo en la piel ?
+            <select id="sintomas_brotes_piel" name="sintomas_brotes_piel">
+                <option value="0,4">No, no he tenido</option>
+                <option value="1,1">Si, pero muy leve</option>
+                <option value="2,2">Si, moderada</option>
+                <option value="3,3">Si, severa</option>
+
+            </select>
+        </p>
+
+        <p>Ha perdido el olfato ?
+            <select id="sintomas_olfato" name="sintomas_olfato">
+                <option value="0,2">No</option>
+                <option value="4,1">Si, pero muy leve</option>
+
+                <option value="0,3">No lo he notado</option>
+            </select>
+        </p>
+
+        <p>Siente que los alimentos no le saben a nada ? (Sentido del gusto)
+            <select id="sintomas_gusto" name="sintomas_gusto">
+                <option value="0,2">No</option>
+                <option value="4,1">Si, pero es muy leve</option>
+
+                <option value="0,3">No lo he notado</option>
+            </select>
+        </p>
+
+        <p>Tiene dolor de cuerpo ?
+            <select id="sintomas_mialgias" name="sintomas_mialgias">
+                <option value="0,4">No, no he tenido</option>
+                <option value="1,1"> Si, pero muy leve</option>
+                <option value="2,2">Si, moderado</option>
+                <option value="2,3">Si, muy severo</option>
+
+            </select>
+        </p>
+
+        <p>Está con diarrea en estos días ?
+            <select id="sintomas_diarrea" name="sintomas_diarrea">
+                <option value="0,4">No, no he tenido</option>
+                <option value="0,1">Si, pero muy leve</option>
+                <option value="1,2">Si, moderada</option>
+                <option value="2,3">Si, severa</option>
+
+            </select>
+        </p>
+
+        <p> Cual ha sido la evolución de su sintomatologia en estos dias
+            <select id="sintomas_evolucion" name="sintomas_evolucion">
+                <option value="0,5">No he tenido síntomas</option>
+                <option value="1,1">Los sintomas en general son muy leves</option>
+                <option value="2,2">Los siontomas que he tenido son graves</option>
+                <option value="3,3">Los sintomas son muy severos</option>
+                <option value="4,4">La persona está o estuvo hospitalizada</option>
+
+            </select>
+        </p>
+
+        <p> Se ha realizado alguna prueba de COVID-19 ?
+            <select id="prueba_covid" name="prueba_covid">
+                <option value="0,3">No me he realizado ninguna prueba</option>
+                <option value="0,1">Si y me resultó POSITIVA </option>
+                <option value="0,2">Si y me resultó NEGATIVA </option>
+            </select>
+        </p>
+
+    </div>
+
+    <div class="tab"><h2>RESULTADO</h2>
+        <div id="htmlText"><br/></div>
+    </div>
+    <div style="overflow:auto;">
+        <div style="float:right;">
+            <button type="button" id="prevBtn" onclick="nextPrev(-1)">Anterior</button>
+            <button type="button" id="nextBtn" onclick="nextPrev(1)">Siguiente</button>
+            <button type="button" style="background-color: yellowgreen;" id="predBtn" onclick="document.getElementById('myform').submit();">Predicción</button>
+        </div>
+    </div>
+    <!-- Circles which indicates the steps of the form: -->
+    <div style="text-align:center;margin-top:40px;">
+        <span class="step"></span>
+        <span class="step"></span>
+        <span class="step"></span>
+        <span class="step"></span>
+    </div>
+</form>
+
+<div style="text-align: center;">
+    <a href="mailto:info@vigilaelcovid.online" class="buttonUrl">Contáctenos</a>
+</div>
+
+<script>
+    let currentTab = 0; // Current tab is set to be the first tab (0)
+    showTab(currentTab); // Display the current tab
+
+    function sumValues(myform) {
+
+        //Get selected data
+        let score_sexo = $('#sexo').val().split(',')[0];
+        let score_edad = $('#edad').val().split(',')[0];
+        let score_etnia = $('#etnia').val().split(',')[0];
+        let score_condicion_economica = $('#condicion_economica').val().split(',')[0];
+        let score_ejercicio = $('#ejercicio').val().split(',')[0];
+        let score_imc = $('#imc').val().split(',')[0];
+        let score_tabaquismo = $('#tabaquismo').val().split(',')[0];
+        let score_alcoholismo = $('#alcoholismo').val().split(',')[0];
+        let score_hipertension = $('#hipertension').val().split(',')[0];
+        let score_hipertension_trat = $('#hipertension_trat').val().split(',')[0];
+        let score_hipertension_trat_tipo = $('#hipertension_trat_tipo').val().split(',')[0];
+        let score_diabetes = $('#diabetes').val().split(',')[0];
+        let score_diabetes_trat = $('#diabetes_trat').val().split(',')[0];
+        let score_diabetes_trat_tipo = $('#diabetes_trat_tipo').val().split(',')[0];
+        let score_pulmonares = $('#pulmonares').val().split(',')[0];
+        let score_pulmonares_trat = $('#pulmonares_trat').val().split(',')[0];
+        let score_pulmonares_trat_tipo = $('#pulmonares_trat_tipo').val().split(',')[0];
+        let score_cancer = $('#cancer').val().split(',')[0];
+        let score_cancer_trat = $('#cancer_trat').val().split(',')[0];
+        let score_cancer_trat_tipo = $('#cancer_trat_tipo').val().split(',')[0];
+        let score_cardiopatias = $('#cardiopatias').val().split(',')[0];
+        let score_cardiopatias_trat = $('#cardiopatias_trat').val().split(',')[0];
+        let score_cardiopatias_trat_tipo = $('#cardiopatias_trat_tipo').val().split(',')[0];
+        let score_renales = $('#renales').val().split(',')[0];
+        let score_hepaticas = $('#hepaticas').val().split(',')[0];
+        let score_psiquiatricas = $('#psiquiatricas').val().split(',')[0];
+        let score_inmunologico = $('#inmunologico').val().split(',')[0];
+        let score_vacunado = $('#vacunado').val().split(',')[0];
+        let score_contacto_previo_sintomaticos = $('#contacto_previo_sintomaticos').val().split(',')[0];
+        let score_contacto_previo_fallecido = $('#contacto_previo_fallecido').val().split(',')[0];
+        let score_ayuda_sano = $('#ayuda_sano').val().split(',')[0];
+        let score_ayuda_sintomatico = $('#ayuda_sintomatico').val().split(',')[0];
+        let score_ayuda_estado = $('#ayuda_estado').val().split(',')[0];
+        let score_ayuda_masde15min = $('#ayuda_masde15min').val().split(',')[0];
+        let score_ayuda_proteccion = $('#ayuda_proteccion').val().split(',')[0];
+        let score_antes_sintomas = $('#antes_sintomas').val().split(',')[0];
+        let score_otros_miembros = $('#otros_miembros').val().split(',')[0];
+        let score_otros_comunidad = $('#otros_comunidad').val().split(',')[0];
+        let score_vive_solo = $('#vive_solo').val().split(',')[0];
+        let score_regreso_viaje = $('#regreso_viaje').val().split(',')[0];
+        let score_incubacion = $('#incubacion').val().split(',')[0];
+        let score_sintomas = $('#sintomas').val().split(',')[0];
+        let score_tos = $('#sintomas_tos').val().split(',')[0];
+        let score_fiebre = $('#sintomas_fiebre').val().split(',')[0];
+        let score_dificultad_respirar = $('#sintomas_dificultad_respirar').val().split(',')[0];
+        let score_garganta = $('#sintomas_garganta').val().split(',')[0];
+        let score_brotes_piel = $('#sintomas_brotes_piel').val().split(',')[0];
+        let score_olfato = $('#sintomas_olfato').val().split(',')[0];
+        let score_gusto = $('#sintomas_gusto').val().split(',')[0];
+        let score_mialgias = $('#sintomas_mialgias').val().split(',')[0];
+        let score_diarrea = $('#sintomas_diarrea').val().split(',')[0];
+        let score_evolucion = $('#sintomas_evolucion').val().split(',')[0];
+
+        //convert data to integers
+        score_sexo = parseInt(score_sexo);
+        score_edad = parseInt(score_edad);
+        score_etnia = parseInt(score_etnia);
+        score_condicion_economica = parseInt(score_condicion_economica);
+        score_ejercicio = parseInt(score_ejercicio);
+        score_imc = parseInt(score_imc);
+        score_tabaquismo = parseInt(score_tabaquismo);
+        score_alcoholismo = parseInt(score_alcoholismo);
+        score_hipertension = parseInt(score_hipertension);
+        score_hipertension_trat = parseInt(score_hipertension_trat);
+        score_hipertension_trat_tipo = parseInt(score_hipertension_trat_tipo);
+        score_diabetes = parseInt(score_diabetes);
+        score_diabetes_trat = parseInt(score_diabetes_trat);
+        score_diabetes_trat_tipo = parseInt(score_diabetes_trat_tipo);
+        score_pulmonares = parseInt(score_pulmonares);
+        score_pulmonares_trat = parseInt(score_pulmonares_trat);
+        score_pulmonares_trat_tipo = parseInt(score_pulmonares_trat_tipo);
+        score_cancer = parseInt(score_cancer);
+        score_cancer_trat = parseInt(score_cancer_trat);
+        score_cancer_trat_tipo = parseInt(score_cancer_trat_tipo);
+        score_cardiopatias = parseInt(score_cardiopatias);
+        score_cardiopatias_trat = parseInt(score_cardiopatias_trat);
+        score_cardiopatias_trat_tipo = parseInt(score_cardiopatias_trat_tipo);
+        score_renales = parseInt(score_renales);
+        score_hepaticas = parseInt(score_hepaticas);
+        score_psiquiatricas = parseInt(score_psiquiatricas);
+        score_inmunologico = parseInt(score_inmunologico);
+        score_vacunado = parseInt(score_vacunado);
+        score_contacto_previo_sintomaticos = parseInt(score_contacto_previo_sintomaticos);
+        score_contacto_previo_fallecido = parseInt(score_contacto_previo_fallecido);
+        score_ayuda_sano = parseInt(score_ayuda_sano);
+        score_ayuda_sintomatico = parseInt(score_ayuda_sintomatico);
+        score_ayuda_estado = parseInt(score_ayuda_estado);
+        score_ayuda_masde15min = parseInt(score_ayuda_masde15min);
+        score_ayuda_proteccion = parseInt(score_ayuda_proteccion);
+        score_antes_sintomas = parseInt(score_antes_sintomas);
+        score_otros_miembros = parseInt(score_otros_miembros);
+        score_otros_comunidad = parseInt(score_otros_comunidad);
+        score_vive_solo = parseInt(score_vive_solo);
+        score_regreso_viaje = parseInt(score_regreso_viaje);
+        score_incubacion = parseInt(score_incubacion);
+        score_sintomas = parseInt(score_sintomas);
+        score_tos = parseInt(score_tos);
+        score_fiebre = parseInt(score_fiebre);
+        score_dificultad_respirar = parseInt(score_dificultad_respirar);
+        score_garganta = parseInt(score_garganta);
+        score_brotes_piel = parseInt(score_brotes_piel);
+        score_olfato = parseInt(score_olfato);
+        score_gusto = parseInt(score_gusto);
+        score_mialgias = parseInt(score_mialgias);
+        score_diarrea = parseInt(score_diarrea);
+        score_evolucion = parseInt(score_evolucion);
+
+        let total = score_sexo + score_edad + score_etnia + score_condicion_economica + score_ejercicio + score_imc + score_tabaquismo + score_alcoholismo + score_hipertension + score_hipertension_trat + score_hipertension_trat_tipo + score_diabetes + score_diabetes_trat + score_diabetes_trat_tipo + score_pulmonares + score_pulmonares_trat + score_pulmonares_trat_tipo + score_cancer + score_cancer_trat + score_cancer_trat_tipo + score_cardiopatias + score_cardiopatias_trat + score_cardiopatias_trat_tipo + score_renales + score_hepaticas + score_psiquiatricas + score_inmunologico + score_vacunado + score_contacto_previo_sintomaticos + score_contacto_previo_fallecido + score_ayuda_sano + score_ayuda_sintomatico + score_ayuda_estado + score_ayuda_masde15min + score_ayuda_proteccion + score_antes_sintomas + score_otros_miembros + score_otros_comunidad + score_vive_solo + score_regreso_viaje + score_incubacion + score_sintomas + score_tos + score_fiebre + score_dificultad_respirar + score_garganta + score_brotes_piel + score_olfato + score_gusto + score_mialgias + score_diarrea + score_evolucion;
+
+        return total;
+
+    }
+
+    function showTab(n) {
+        // This function will display the specified tab of the form...
+        var x = document.getElementsByClassName("tab");
+        x[n].style.display = "block";
+        //... and fix the Previous/Next buttons:
+        if (n == 0) {
+            document.getElementById("prevBtn").style.display = "none";
+            document.getElementById("predBtn").style.display = "none";
+        } else {
+            document.getElementById("prevBtn").style.display = "inline";
+        }
+        if (n == (x.length - 1)) {
+            document.getElementById("predBtn").style.display = "inline";
+            document.getElementById("nextBtn").innerHTML = "Nuevo";
+            let resultado = sumValues();
+            resultado = parseInt(resultado);
+            let textoHtml = 'De acuerdo a sus respuestas usted obtuvo un total de: ' + resultado + ' puntos.<br /><br />';
+            if (resultado > 80) {
+                textoHtml += '<font color="red">Su puntaje está por arriba de 80, ésto lo pone a usted en una categoría de MUY alto riesgo, acuda a los servicios de salud para su valoración.</font>';
+            } else if (resultado > 40) {
+                textoHtml += '<font color="orange">Su puntaje está entre 41 y 80, ésto lo pone a usted en una categoría de riesgo, oberve medidas y de ser necesario acuda a los servicios.</font>';
+            } else if (resultado > 25) {
+                textoHtml += '<font color="yellow">Su puntaje está entre 26 y 40, observe medidas de aislamiento social, su riesgo es de medio a bajo.</font>';
+            } else {
+                textoHtml += '<font color="green">Su puntaje es menor a 25, observe medidas de aislamiento social, su riesgo es MUY bajo.</font>';
+            }
+            textoHtml += "<br><br><HR><BR> <H2> Ahora, lo siguiente es obtener la predicción a traves de nuestro algoritmo de Inteligencia Artificial, para simular, lo que podria resultar una prueba real de COVID19 </h2><br><h1>No olvide ahora hacer clic en el botón de <b>Predicción</b>, a la derecha y esperar unos segundos por el resultado. </h1><center> <b>RECUERDE</b> que ésta prueba es solo una guía que de ninguna forma sustituye las pruebas REALES de PCR o de anticuerpos. </center>";
+            document.getElementById("htmlText").innerHTML = textoHtml;
+
+
+        } else {
+
+            document.getElementById("nextBtn").innerHTML = "Siguiente";
+            document.getElementById("predBtn").style.display = "none";
+        }
+        window.scrollTo(0, 0);
+        //... and run a function that will display the correct step indicator:
+        fixStepIndicator(n)
+    }
+
+    function nextPrev(n) {
+        // This function will figure out which tab to display
+        var x = document.getElementsByClassName("tab");
+        // Exit the function if any field in the current tab is invalid:
+        if (n == 1 && !validateForm()) return false;
+        // Hide the current tab:
+        x[currentTab].style.display = "none";
+        // Increase or decrease the current tab by 1:
+        currentTab = currentTab + n;
+        // if you have reached the end of the form...
+        if (currentTab >= x.length) {
+            window.location.reload(true);
+            return false;
+        }
+        // Otherwise, display the correct tab:
+        showTab(currentTab);
+    }
+
+    function validateForm() {
+        // This function deals with validation of the form fields
+        var x, y, i, valid = true;
+        x = document.getElementsByClassName("tab");
+        y = x[currentTab].getElementsByTagName("input");
+        // A loop that checks every input field in the current tab:
+        for (i = 0; i < y.length; i++) {
+            // If a field is empty...
+            if (y[i].value == "") {
+                // add an "invalid" class to the field:
+                y[i].className += " invalid";
+                // and set the current valid status to false
+                valid = false;
+            }
+        }
+        // If the valid status is true, mark the step as finished and valid:
+        if (valid) {
+            document.getElementsByClassName("step")[currentTab].className += " finish";
+        }
+
+        return valid; // return the valid status
+    }
+
+    function fixStepIndicator(n) {
+        // This function removes the "active" class of all steps...
+        var i, x = document.getElementsByClassName("step");
+        for (i = 0; i < x.length; i++) {
+            x[i].className = x[i].className.replace(" active", "");
+        }
+        //... and adds the "active" class on the current step:
+        x[n].className += " active";
+    }
+
+</script>
+
+</body>
+</html>

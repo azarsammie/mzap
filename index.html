@@ -1,0 +1,2084 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com"/>
+    <link rel="preconnect" href="https://unpkg.com"/>
+    
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/app-icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/app-icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/app-icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/app-icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/app-icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/app-icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/app-icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/app-icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/app-icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/images/app-icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/app-icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/app-icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/app-icon/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+
+     <title>mZapCR</title>
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js" async></script>
+    <link crossorigin="" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        rel="stylesheet" />
+
+    <script crossorigin="" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script crossorigin=""
+        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+        src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" async></script>
+
+    <link rel="stylesheet" href="maps/MarkerCluster.css" />
+    <link rel="stylesheet" href="maps/MarkerCluster.Default.css" />
+    <script src="maps/leaflet.markercluster-src.js" async></script>
+
+    <link href="css/framework7.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <link href="css/colors/turquoise.css" rel="stylesheet">
+    <link href="css/swipebox.css" rel="stylesheet" type="text/css" />
+    <link href="css/animations.css" rel="stylesheet" type="text/css" />
+    <link rel="prefetch" href="https://azar.mzapcr.com/css/reset.css" as="style"/>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700,900&display=swap' rel='stylesheet'
+        type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all"
+        rel="stylesheet">
+
+        
+
+    <link rel="manifest" href="manifest.json">
+</head>
+<style>
+    /* Hide all steps by default: */
+    .tab_s {
+        display: none;
+        background-color: #f1f1f1;
+        margin: 20px auto;
+        font-family: Arial;
+        padding: 20px;
+        width: 90%;
+        min-width: 300px;
+        color: black;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-family: Arial;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    #prevBtn {
+        background-color: #bbbbbb;
+    }
+
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.5;
+    }
+
+    .step.active {
+        opacity: 1;
+    }
+
+    /* Mark the steps that are finished and valid: */
+    .step.finish {
+        background-color: #4CAF50;
+    }
+</style>
+
+<body id="mobile_wrap">
+
+    <!-- Register Service Workder -->
+    <script>
+        $(document).ready(function () {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('/serviceWorker.js');
+                });
+            }
+        });
+    </script>
+    <div class="statusbar-overlay"></div>
+
+    <div class="panel-overlay"></div>
+
+    <div class="panel panel-left panel-cover">
+        <div class="user_login_info">
+            <div class="user_thumb"><img alt="" id="user_photo" src="images/profile.jpg"
+                    style='width: 800px; height: 200px; object-fit: contain' title="" />
+                <div class="user_details" id="user_name"></div>
+            </div>
+            <nav class="user-nav">
+                <ul>
+                    <li><a class="close-panel" href="usuario_eventos.html" id="link_productos"><img alt=""
+                                src="images/icons/white/message.png" - title="" /><span>Mis eventos</span><!-- strong-->
+                    <li><a class="close-panel" href="usuario_notificaciones.html" id="link_notificaciones"><img alt=""
+                                src="images/icons/white/download.png" title="" /><span>Mis notificaciones</span>
+                            <!-- strong-->
+                    <li><a class="close-panel" href="#" id="cerrar_sesion" onclick="cerrar_sesion()"><img alt=""
+                                src="images/icons/white/menu_close.png" title="" /><span>Cerrar sesión</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="panel panel-right panel-cover">
+        <h2>Buscar evento</h2>
+        <div class="search_form"><input class="search_input" id="searchProducto" name="searchProducto"
+                placeholder="Producto" type="text" value="" /><input class="search_submit" id="buscar" name="buscar"
+                onClick="BuscarEvento();" src="images/icons/white/search.png" type="image" /></div>
+        <div class="clear"></div>
+        <h3>Resultados</h3>
+        <ul class="popular_posts" id="resultado_productos"></ul>
+    </div>
+
+    <!-- Main View -->
+    <div class="views">
+        <div class="view view-main">
+            <div class="pages  toolbar-through">
+                <div class="page homepage" data-page="index">
+                    <div class="page-content">
+                        <div class="logo"><a href="menu.html"><img alt="" src="images/logo.png" title="" /></a></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom Toolbar-->
+            <div class="toolbar">
+                <div class="toolbar-inner">
+                    <ul class="toolbar_icons">
+                        <li><a class="open-panel" data-panel="left" href="#"><img alt=""
+                                    src="images/icons/white/user.png" title="" /></a></li>
+                        <li><a href="evento_agregar.html"><img alt="" src="images/icons/white/photos.png"
+                                    title="" /></a>
+                        </li>
+                        <li class="menuicon"><a href="menu.html"><img alt="" src="images/icons/white/home.png"
+                                    title="" /></a></li>
+                        <li><a href="categorias.html"><img alt="" src="images/icons/white/menu.png" title="" /></a></li>
+                        <li><a href="evento_mapa.html"><img alt="" src="images/icons/white/map.png" title="" /></a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Popup -->
+    <div class="popup popup-login">
+        <div class="content-block-login">
+            <h4>INGRESO</h4>
+            <div class="form_logo"><img alt="" src="images/logo.png" title="" /></div>
+            <div class="loginform">
+                <!--            <form id="LoginForm" method="post">-->
+                <input class="form_input required" id="telefonoLogin" name="telefono" placeholder="usuario" type="text"
+                    value="" />
+                <input class="form_input required" id="codigoLogin" name="codigo" placeholder="código" type="password"
+                    value="" />
+                <!--            <div class="forgot_pass"><a href="#" data-popup=".popup-forgot" class="open-popup">Forgot Password?</a></div>-->
+                <input class="form_submit" id="submitLogin" name="submit" onclick="valida_login()" type="submit"
+                    value="INGRESAR" />
+                <!--            </form>-->
+                <div class="signup_bottom">
+                    <p>Aún no tiene una cuenta?</p>
+                    <a class="open-popup" data-popup=".popup-signup" href="#">REGISTRARSE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reporte Evento Popup -->
+    <div class="popup popup-reportar-evento">
+        <div class="content-block-login">
+            <h4>Reportar Evento</h4>
+            <div class="close_loginpopup_button"><a class="close-popup" href="#"><img alt=""
+                        src="images/icons/white/menu_close_black.png" title="" /></a></div>
+
+            <div class="contactform">
+                <form id="form-reportar-evento" name="form-reportar-evento" method="POST" class="ajax-submit"
+                    style="width: 80%; margin-left : 10%" ;>
+
+                    <label>Motivo del reporte:</label>
+                    <textarea id="text-reportar-evento" name="text-reportar-evento" class="form_textarea" rows=""
+                        cols=""></textarea>
+
+                    <input class="form_submit" id="submit-reportar-evento" name="submit" onclick="reportar_evento()"
+                        type="submit" value="REPORTAR" />
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Reporte Evento Popup -->
+    <div class="popup popup-reportar-usuario">
+        <div class="content-block-login">
+            <h4>Reportar Usuario</h4>
+            <div class="close_loginpopup_button"><a class="close-popup" href="#"><img alt=""
+                        src="images/icons/white/menu_close_black.png" title="" /></a></div>
+
+            <div class="contactform">
+                <form id="form-reportar-usuario" name="form-reportar-usuario" method="POST" class="ajax-submit"
+                    style="width: 80%; margin-left : 10%" ;>
+
+                    <label>Motivo del reporte:</label>
+                    <textarea id="text-reportar-usuario" name="text-reportar-usuario" class="form_textarea" rows=""
+                        cols=""></textarea>
+
+                    <input class="form_submit" id="submit-reportar-usuario" name="submit" onclick="reportar_usuario();"
+                        type="submit" value="REPORTAR" />
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Register Popup -->
+    <div class="popup popup-signup">
+        <div class="content-block-login">
+            <h4>REGISTRO</h4>
+            <div class="form_logo"><img alt="" src="images/logo.png" title="" /></div>
+            <div class="loginform">
+                <div id="RegisterForm">
+                    <table width="100%">
+                        <tr>
+                            <td width="40%"><label onClick="openselectpais()">Seleccione el país:</label></td>
+                            <td width="60%">
+                                <div class="chippais" onClick="openselectpais()">
+                                    <img alt="Pais" height="96" id="imagenpais" src="images/flag.png" width="96">
+                                    <strong id="nombrepais">Seleccionar país</strong>
+                                </div>
+                                <input class="form_submit" id="Pais" name="enviar" onclick="openselectpais()"
+                                    type="submit" value="país" />
+                            </td>
+                        </tr>
+                    </table>
+                    <label>Digite su usuario:</label>
+                    <table width="100%">
+                        <tr>
+                            <td width="40%">
+                                <p id="prefijos"></p>
+                            </td>
+                            <td width="60%">
+                                <input class="form_input required" id="Telefono" name="Telefono" placeholder="usuario *"
+                                    type="text" value="" />
+                                <div id="alerta"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <label>Digite su email:</label>
+                    <table width="100%">
+                        <tr>
+                            <td width="40%"></td>
+                            <td width="60%">
+                                <input class="form_input required" id="Email" name="Email" placeholder="e-mail *"
+                                    type="text" value="" />
+                                <div id="alerta"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <input class="form_submit" id="enviar" id="submit" name="enviar" onclick="CreaUsuario()"
+                        type="submit" value="ENVIAR" />
+                    <div id="codigo_verificacion" style='display:none;'>
+                        <label>Ingrese código de verificación:</label>
+                        <input class="form_input required" id="codigo" name="codigo" placeholder="código" type="text"
+                            value="" />
+                        <div id="alerta_codigo"></div>
+                        <input class="form_submit" id="verificar" id="submit3" name="verificar"
+                            onclick="VerificaUsuario()" type="submit" value="VERIFICAR" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Popup -->
+    <div class="popup popup-register">
+        <div class="content-block-account">
+            <h4>CUENTA</h4>
+            <div class="loginform">
+                <table width="100%">
+
+                    <tr>
+                        <td width="100%">
+                            <div class="item-content">
+                                <br /><br />
+                                <strong>TÉRMINOS Y CONDICIONES</strong>
+                                <br /><br />
+                                <br /><br />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="5%">
+                            <ul>
+                                <!-- Single radio input -->
+                                <li><label class="label-radio item-content">
+                                        <!-- Checked by default --><input checked="checked" id="aceptatyc"
+                                            name="aceptatyc" type="radio" value="si">
+                                        <div class="item-media"><i class="icon icon-form-radio"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title"><strong>Acepto términos y condiciones</strong></div>
+                                        </div>
+                                    </label></li><!-- Another radio input -->
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+                <div id="alerta_info"></div>
+                <br><br><input class="form_submit" id="verificar2" id="submit2" name="verificar"
+                    onclick="GuardaInfoUsuario()" type="submit" value="CONTINUAR" />
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Forgot Popup -->
+    <div class="popup popup-forgot">
+        <div class="content-block-login">
+            <h4>Seleccione el pais</h4>
+            <ul class="features_list_detailed" id="listapais"></ul>
+        </div>
+    </div>
+
+    <!-- Social Popup -->
+    <div class="popup popup-social">
+        <div class="content-block">
+            <h4>Síguenos</h4>
+            <div class="close_loginpopup_button"><a class="close-popup" href="#"><img alt=""
+                        src="images/icons/white/menu_close_black.png" title="" /></a></div>
+            <p>Le invitamos a seguirnos a través de nuestras redes sociales.</p>
+            <ul class="social_share">
+                <li><a class="external" href="https://www.facebook.com/mzap.costarica.7"><img alt=""
+                            src="images/icons/white/facebook.png" title="" /></a></li>
+                <li><a class="external" href="https://www.instagram.com/mzapcr/"><img alt=""
+                            src="images/icons/white/instagram.png" title="" /></a></li>
+                <li><a class="external" href="https://twitter.com/mzapcr"><img alt=""
+                            src="images/icons/white/twitter.png" title="" /></a></li>
+            </ul>
+
+        </div>
+    </div>
+
+    <!-- Terminos y Condiciones Popup -->
+    <div class="popup popup-tyc">
+        <div class="content-block-login">
+            <h4>Encuesta</h4>
+            <div class="close_loginpopup_button"><a class="close-popup" href="#"><img alt=""
+                        src="images/icons/white/menu_close_black.png" title="" /></a></div>
+
+
+        </div>
+    </div>
+
+    <div class="popup popup-encuesta">
+        <div class="content-block-login">
+            <h4>Encuesta</h4>
+            <div class="close_loginpopup_button"><a class="close-popup" href="#"><img alt=""
+                        src="images/icons/white/menu_close_black.png" title="" /></a></div>
+
+            <form action="logica/logicaEncuesta.php" id="encuestaForm" method="post">
+                <div class="tab_s">
+                    <h2>Una encuesta del proyecto ¡mZAP!</h2>
+                    <br />
+                    Bienvenid@ como parte de la aplicacióm ¡mZAP! usted ha sido invitad@ a
+                    completar una encuesta acerca sus creencias y experiencias sobre del
+                    medio ambiente, el uso de la tecnología y la salud. Este es un proyecto
+                    colaborativo entre la UCIMED y la Universidad de Rochester en Nueva York,
+                    Estados Unidos. La encuesta le tomará unos 15 minutos en completar.
+                    Agradecemos su valioso tiempo.
+                    <input type="hidden" id="user_id" name="user_id" value="3487">
+                    <p style="text-align: left; color: black;"><br />
+                        ¿En primer lugar nos podría decir cuál de los siguientes grupos describe mejor su edad
+                        actual?<br /><br />
+                        <input name="sec0_edad" type="radio" value="edad_-18"> - 18 años <br />
+                        <!-- Si es menos de 18 muestra mensaje. -->
+                        <input name="sec0_edad" type="radio" value="18_25"> 18-25 años <br />
+                        <input name="sec0_edad" type="radio" value="26_35"> 26-35 años <br />
+                        <input name="sec0_edad" type="radio" value="36_45"> 36-45 años <br />
+                        <input name="sec0_edad" type="radio" value="46_55"> 46-55 años <br />
+                        <input name="sec0_edad" type="radio" value="56_65"> 56-65 años <br />
+                        <input name="sec0_edad" type="radio" value="mas_66"> Más de 66 años <br />
+                    </p>
+
+                </div>
+
+                <div class="tab_s">
+                    <h2>Sección 1 Preguntas relacionadas al ambiente y la comunidad<br />
+                        Quisiéramos hacerle unas preguntas sobre el medio ambiente y soluciones en su comunidad. Por
+                        favor
+                        utilice la siguiente escala para contestar las siguientes preguntas, siendo 1 No es Probable, 3
+                        No estoy
+                        seguro y 5 Muy Probable.<br>
+                        Generalmente, ¿cómo se resuelven los problemas/diferencias de medio ambiente en su comunidad?
+                    </h2>
+                    <p style="text-align: left; color: black;"><br />
+                        Hablamos de los problemas entre nosotros y lo resolvemos nosotros mismos.<br /><br />
+                        <input name="sec1_hablar_problemas" type="radio" value="1"> 1 No es probable<br />
+                        <input name="sec1_hablar_problemas" type="radio" value="2"> 2 <br />
+                        <input name="sec1_hablar_problemas" type="radio" value="3"> 3 No estoy seguro <br />
+                        <input name="sec1_hablar_problemas" type="radio" value="4"> 4 <br />
+                        <input name="sec1_hablar_problemas" type="radio" value="5"> 5 Muy probable <br />
+                    </p>
+
+                    <p style="text-align: left; color: black;"><br />
+                        Se acude a las autoridades (ejemplo: policía, la alcaldía, el cantón)<br /><br />
+                        <input name="sec1_acude_autoridades" type="radio" value="1"> 1 No es probable<br />
+                        <input name="sec1_acude_autoridades" type="radio" value="2"> 2 <br />
+                        <input name="sec1_acude_autoridades" type="radio" value="3"> 3 No estoy seguro <br />
+                        <input name="sec1_acude_autoridades" type="radio" value="4"> 4 <br />
+                        <input name="sec1_acude_autoridades" type="radio" value="5"> 5 Muy probable <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Se piensa que alguien eventualmente los resolverá<br /><br />
+                        <input name="sec1_piensa_resolver" type="radio" value="1"> 1 No es probable<br />
+                        <input name="sec1_piensa_resolver" type="radio" value="2"> 2 <br />
+                        <input name="sec1_piensa_resolver" type="radio" value="3"> 3 No estoy seguro <br />
+                        <input name="sec1_piensa_resolver" type="radio" value="4"> 4 <br />
+                        <input name="sec1_piensa_resolver" type="radio" value="5"> 5 Muy probable <br />
+                    </p>
+                </div>
+
+                <div class="tab_s">
+                    <h2>Sección 2 Preguntas relacionadas a vectores<br />
+                        Quisiéramos saber su opinión acerca de las enfermedades transmitidas por vectores.</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        En una escala del 1 al 5, ¿cuánto le preocupan las enfermedades transmitidas por
+                        mosquitos?<br /><br />
+                        <input name="sec2_preocupa_enfermedades_mosquitos" type="radio" value="1"> 1 No me preocupan
+                        para
+                        nada <br />
+                        <input name="sec2_preocupa_enfermedades_mosquitos" type="radio" value="2"> 2 No me preocupan
+                        mucho
+                        <br />
+                        <input name="sec2_preocupa_enfermedades_mosquitos" type="radio" value="3"> Neutral <br />
+                        <input name="sec2_preocupa_enfermedades_mosquitos" type="radio" value="4"> 4 Me preocupan un
+                        poco
+                        <br />
+                        <input name="sec2_preocupa_enfermedades_mosquitos" type="radio" value="5"> 5 Me preocupan
+                        bastante
+                        <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Por favor seleccione cuáles de estas enfermedades cree que se transmiten por los mosquitos.
+                        (marque
+                        todas las que apliquen):<br /><br />
+                        <!-- esta es de seleccion multiple y se le da clic en otra hay que especificar -->
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="Dengue"> Dengue <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="VIH"> VIH <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="Malaria"> Malaria
+                        <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="Chikungünya">
+                        Chikungünya
+                        <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="H1N1"> H1N1 <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="Zika"> Zika <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="Influenza">
+                        Influenza/Gripe <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="Chagas"> Chagas <br />
+                        <input name="sec2_trasmite_enfermedades_mosquito" type="checkbox" value="Otra"> Otra <br />
+                    </p>
+                </div>
+
+                <div class="tab_s">
+                    <h2>Sección 3 Actitudes sobre la naturaleza y el ambiente<br />
+
+                        Ahora quisiéramos que identificara la importancia de la naturaleza y el medio ambiente en cada
+                        uno de
+                        los siguientes elementos utilizando una escala de 1-5, siendo:<br /><br />
+
+                        1 lo menos importante<br />
+                        3 No está seguro<br />
+                        5 lo más importante</h2>
+
+                    <p style="text-align: left; color: black;"><br />
+                        Producir madera (p. ej, muebles)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_producir_madera" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_producir_madera" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_producir_madera" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_producir_madera" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_producir_madera" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Producir alimentos (p.ej, bananos)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_producir_alimentos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_producir_alimentos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_producir_alimentos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_producir_alimentos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_producir_alimentos" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Producir agua potable<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_producir_agua" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_producir_agua" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_producir_agua" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_producir_agua" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_producir_agua" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Proteger contra peligros naturales (p. ej, huracanes)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_peligros_naturales" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_peligros_naturales" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_peligros_naturales" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_peligros_naturales" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_peligros_naturales" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Producir aire limpio<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_aire_limpio" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_aire_limpio" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_aire_limpio" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_aire_limpio" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_aire_limpio" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Producir tierra (p. ej, para la agricultura)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_producir_tierra" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_producir_tierra" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_producir_tierra" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_producir_tierra" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_producir_tierra" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Regular el clima<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_regular_clima" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_regular_clima" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_regular_clima" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_regular_clima" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_regular_clima" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+
+                        Es un lugar de recreación (p. ej, caminar, correr, andar en bicicleta)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_lugar_recreacion" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_lugar_recreacion" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_lugar_recreacion" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_lugar_recreacion" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_lugar_recreacion" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Es un lugar para relajarse<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_lugar_relajarse" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_lugar_relajarse" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_lugar_relajarse" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_lugar_relajarse" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_lugar_relajarse" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Es un lugar de belleza<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_lugar_belleza" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_lugar_belleza" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_lugar_belleza" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_lugar_belleza" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_lugar_belleza" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Es un hábitat para plantas<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_habitat_plantas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_habitat_plantas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_habitat_plantas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_habitat_plantas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_habitat_plantas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Es un hábitat para animales<br /><br />
+                        <tr>
+                            <th class=""><input name="sec3_habitat_animales" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec3_habitat_animales" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec3_habitat_animales" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec3_habitat_animales" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec3_habitat_animales" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 4 Creencias sobre riesgos de salud ambiental<br />
+
+                        En una escala del 1 al 5, siendo 1 lo menos importante y 5 lo más importante, clasifique la
+                        importancia
+                        de estos problemas:</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        Mosquitos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_mosquitos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_mosquitos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_mosquitos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_mosquitos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_mosquitos" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Basura<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_basura" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_basura" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_basura" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_basura" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_basura" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Roedores (ratas)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_roedores" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_roedores" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_roedores" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_roedores" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_roedores" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Aguas contaminadas<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_aguas_contaminadas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_aguas_contaminadas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_aguas_contaminadas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_aguas_contaminadas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_aguas_contaminadas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Aguas estancadas<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_aguas_estancadas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_aguas_estancadas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_aguas_estancadas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_aguas_estancadas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_aguas_estancadas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Falta de agua<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_falta_agua" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_falta_agua" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_falta_agua" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_falta_agua" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_falta_agua" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Moscas<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_moscas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_moscas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_moscas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_moscas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_moscas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Pesticidas/Químicos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_pesticidas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_pesticidas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_pesticidas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_pesticidas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_pesticidas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Inundaciones<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_inundaciones" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_inundaciones" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_inundaciones" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_inundaciones" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_inundaciones" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Carreteras en mal estado<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_carreteras_malas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_carreteras_malas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_carreteras_malas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_carreteras_malas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_carreteras_malas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Incendios forestales<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_incendios" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_incendios" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_incendios" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_incendios" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_incendios" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Neblina<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_neblina" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_neblina" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_neblina" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_neblina" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_neblina" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Lluvias torrenciales<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_lluvias" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_lluvias" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_lluvias" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_lluvias" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_lluvias" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Tormentas<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_tormentas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_tormentas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_tormentas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_tormentas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_tormentas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Erupciones volcánicas<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_volcanicas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_volcanicas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_volcanicas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_volcanicas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_volcanicas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Sequía<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_Sequía" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_Sequía" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_Sequía" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_Sequía" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_Sequía" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Deslizamientos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_deslizamientos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_deslizamientos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_deslizamientos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_deslizamientos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_deslizamientos" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Terremotos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_terremotos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_terremotos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_terremotos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_terremotos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_terremotos" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Calor/Frío excesivo<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_clima_excesivo" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_clima_excesivo" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_clima_excesivo" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_clima_excesivo" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_clima_excesivo" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Perros o gatos realengos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec4_perros" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec4_perros" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec4_perros" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec4_perros" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec4_perros" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 5 Actitudes sobre el ambiente<br />
+
+                        Por favor Indique que tan de acuerdo o en desacuerdo está usted con las siguientes
+                        declaraciones.<br />
+
+                        Siendo 1 Totalmente en desacuerdo, 4 No estoy seguro y 7 Totalmente de acuerdo. <br /></h2>
+
+                    <p style="text-align: left; color: black;"><br />
+                        Me entristece ver bosques tumbados para la agricultura o el desarrollo.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_bosque_tumbados" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_bosque_tumbados" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_bosque_tumbados" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_bosque_tumbados" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_bosque_tumbados" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_bosque_tumbados" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_bosque_tumbados" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Los humanos están abusando del medio de manera severa.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_humnanos_abuso" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_humnanos_abuso" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_humnanos_abuso" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_humnanos_abuso" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_humnanos_abuso" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_humnanos_abuso" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_humnanos_abuso" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Siempre que sea posible, trato de salvar los recursos naturales.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_salvar_recursos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_salvar_recursos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_salvar_recursos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_salvar_recursos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_salvar_recursos" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_salvar_recursos" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_salvar_recursos" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Me gustaría unirme y participar activamente en un grupo ambientalista.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_unirme_ambientalista" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_unirme_ambientalista" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_unirme_ambientalista" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_unirme_ambientalista" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_unirme_ambientalista" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_unirme_ambientalista" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_unirme_ambientalista" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Una de las razones más importantes para mantener limpios los lagos, playas y ríos es que la
+                        gente
+                        tenga un lugar donde disfrutar de los deportes acuáticos.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_mantener_limpios" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_mantener_limpios" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_mantener_limpios" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_mantener_limpios" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_mantener_limpios" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_mantener_limpios" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_mantener_limpios" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Los seres humanos fueron creados o evolucionados para dominar el resto de la
+                        naturaleza.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_humanos_dominar" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_humanos_dominar" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_humanos_dominar" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_humanos_dominar" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_humanos_dominar" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_humanos_dominar" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_humanos_dominar" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Me opongo a que los gobiernos controlen y regulen la forma en que se utilizan las materia primas
+                        para intentar que duren más.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_goniernos_utilizan" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_goniernos_utilizan" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_goniernos_utilizan" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_goniernos_utilizan" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_goniernos_utilizan" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_goniernos_utilizan" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_goniernos_utilizan" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        La ciencia moderna resolverá nuestros problemas ambientales.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_ciencia_moderna" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_ciencia_moderna" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_ciencia_moderna" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_ciencia_moderna" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_ciencia_moderna" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_ciencia_moderna" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_ciencia_moderna" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Proteger los trabajos de las personas es más importante que proteger el
+                        medioambiente.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_proteger_trabajos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_proteger_trabajos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_proteger_trabajos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_proteger_trabajos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_proteger_trabajos" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_proteger_trabajos" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_proteger_trabajos" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Yo creo que pasar tiempo en la naturaleza es aburrido.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_tiempo_naturaleza" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_tiempo_naturaleza" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_tiempo_naturaleza" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_tiempo_naturaleza" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_tiempo_naturaleza" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_tiempo_naturaleza" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_tiempo_naturaleza" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Proteger el medioambiente es más importante que proteger los trabajos de las
+                        personas.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_proteger_medioambiente" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_proteger_medioambiente" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_proteger_medioambiente" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_proteger_medioambiente" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_proteger_medioambiente" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_proteger_medioambiente" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_proteger_medioambiente" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        No me entristece ver ambientes naturales destruidos..<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_entristece_destruidos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_entristece_destruidos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_entristece_destruidos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_entristece_destruidos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_entristece_destruidos" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_entristece_destruidos" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_entristece_destruidos" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Prefiero un jardín que sea salvaje y natural a uno bien arreglado y ordenado.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_jardin_salvaje" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_jardin_salvaje" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_jardin_salvaje" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_jardin_salvaje" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_jardin_salvaje" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_jardin_salvaje" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_jardin_salvaje" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Se debe alentar a las familias a limitarse a dos niños o menos.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec5_alentar_familias" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec5_alentar_familias" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec5_alentar_familias" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec5_alentar_familias" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec5_alentar_familias" type="radio" value="5"> 5</th>
+                            <th class=""><input name="sec5_alentar_familias" type="radio" value="6"> 6</th>
+                            <th class=""><input name="sec5_alentar_familias" type="radio" value="7"> 7</th>
+                        </tr>
+                    </p>
+
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 6 Actitudes sobre su salud<br />
+
+                        Por favor seleccione la respuesta que describa que tan de acuerdo o en desacuerdo está usted con
+                        las
+                        siguientes declaraciones.<br />
+
+                        Siendo 1 Totalmente en desacuerdo, 3 Ni de acuerdo, ni en desacuerdo y 5 Totalmente de acuerdo.
+                    </h2>
+                    <p style="text-align: left; color: black;"><br />
+                        Para mí, la mejor manera de evitar enfermedades en tener consultas regulares con un
+                        médico.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_evitar_enfermedad" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_evitar_enfermedad" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_evitar_enfermedad" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_evitar_enfermedad" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_evitar_enfermedad" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Todas las veces que no me siento bien de salud, consulto un médico.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_consulto_medico" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_consulto_medico" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_consulto_medico" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_consulto_medico" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_consulto_medico" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Yo puedo controlar mi salud.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_controlar_salud" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_controlar_salud" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_controlar_salud" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_controlar_salud" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_controlar_salud" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        La suerte es muy importante para recuperarme de una enfermedad.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_suerte" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_suerte" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_suerte" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_suerte" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_suerte" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Mi salud es principalmente una cuestión de suerte y azar.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_salud" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_salud" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_salud" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_salud" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_salud" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        La principal cosa que afecta mi salud, es lo que yo mismo hago.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_afecta_salud" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_afecta_salud" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_afecta_salud" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_afecta_salud" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_afecta_salud" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Si yo me cuidara bien, puedo evitar enfermedades.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_cuidara_bien" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_cuidara_bien" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_cuidara_bien" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_cuidara_bien" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_cuidara_bien" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Cuando me sano de una enfermedad, es porque las personas cuidaron bien de mí (mi médico, mi
+                        esposa,
+                        la enfermera, los amigos, la familia, etc.)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_sano_enfermedad" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_sano_enfermedad" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_sano_enfermedad" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_sano_enfermedad" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_sano_enfermedad" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Si fuera por mi destino, yo tendría salud.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec6_destino" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec6_destino" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec6_destino" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec6_destino" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec6_destino" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 7 Acceso y uso de la tecnología y redes sociales<br />
+
+                        Ahora quisiéramos hacerle unas preguntas acerca del uso y acceso a la tecnología y las redes
+                        sociales en
+                        su comunidad. Sus respuestas deben ser basadas en sus creencias personales. No hay respuestas
+                        correctas
+                        o incorrectas.</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Cuántas horas pasa cada día usando dispositivos electrónicos (teléfonos inteligentes, tabletas,
+                        computadoras)? Incluya tiempo en el trabajo y en casa.<br /><br />
+                        <input name="sec7_frecuencia_dispositivos" type="radio" value="Ninguna"> Ninguna <br />
+                        <input name="sec7_frecuencia_dispositivos" type="radio" value="Menos de una hora"> Menos de una
+                        hora <br />
+                        <input name="sesec7_frecuencia_dispositivosg7" type="radio" value="1-2 horas"> 1-2 horas <br />
+                        <input name="sec7_frecuencia_dispositivos" type="radio" value="3-5 horas"> 3-5 horas <br />
+                        <input name="sec7_frecuencia_dispositivos" type="radio" value="6 horas o más5"> 5 6 horas o más
+                        <br />
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>¿Con qué frecuencia usted utiliza las siguientes redes sociales? (Marque toda las que
+                        apliquen)</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        Facebook<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_facebook" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_facebook" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_facebook" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_facebook" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_facebook" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Twitter<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_twitter" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_twitter" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_twitter" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_twitter" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_twitter" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        WhatsApp<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_whatsApp" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_whatsApp" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_whatsApp" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_whatsApp" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_whatsApp" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Instagram<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_instagram" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_instagram" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_instagram" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_instagram" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_instagram" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        LinkedIn<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_linkedIn" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_linkedIn" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_linkedIn" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_linkedIn" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_linkedIn" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Snapchat<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_snapchat" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_snapchat" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_snapchat" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_snapchat" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_snapchat" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        TikTok<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_tikTok" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_tikTok" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_tikTok" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_tikTok" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_tikTok" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        YouTube<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_frecuencia_youTube" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_frecuencia_youTube" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_frecuencia_youTube" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_frecuencia_youTube" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_frecuencia_youTube" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Indique que tan de acuerdo o en desacuerdo usted está con las siguientes
+                        declaraciones:<br />
+
+                        Siendo 1 Totalmente en desacuerdo, 3 Ni de acuerdo, ni en desacuerdo y 5 Totalmente de acuerdo.
+                    </h2>
+                    <p style="text-align: left; color: black;"><br />
+                        Creo que es importante poder encontrar cualquier información cuando quiera en línea.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_informacion" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_informacion" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_informacion" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_informacion" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_informacion" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Siento que es importante poder acceder a la Internet cuando quiera.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_acceder_internet" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_acceder_internet" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_acceder_internet" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_acceder_internet" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_acceder_internet" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Creo que es importante mantenerse al día con las últimas tendencias en tecnología.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_tendencias" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_tendencias" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_tendencias" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_tendencias" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_tendencias" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        La tecnología proporcionará soluciones a muchos de nuestros problemas.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_tecnologia_soluciones" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_tecnologia_soluciones" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_tecnologia_soluciones" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_tecnologia_soluciones" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_tecnologia_soluciones" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Con la tecnología, todo es posible.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_tecnologia_posible" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_tecnologia_posible" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_tecnologia_posible" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_tecnologia_posible" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_tecnologia_posible" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Siento que logro más cosas gracias a la tecnología.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_gracias" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_gracias" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_gracias" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_gracias" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_gracias" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Las nuevas tecnologías hacen que las personas pierdan demasiado tiempo.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_nuevas_tecnologias" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_nuevas_tecnologias" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_nuevas_tecnologias" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_nuevas_tecnologias" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_nuevas_tecnologias" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Las nuevas tecnologías hacen la vida más complicada.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_tecnologias_nuevas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_tecnologias_nuevas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_tecnologias_nuevas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_tecnologias_nuevas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_tecnologias_nuevas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Las nuevas tecnologías hacen que las personas estén más aisladas.<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_aisladas" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_aisladas" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_aisladas" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_aisladas" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_aisladas" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Por favor indique con qué frecuencia realiza las siguientes actividades en su
+                        teléfono móvil:</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        Leer correos electrónicos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_email" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_email" type="radio" value="Varias veces al mes"> Varias
+                                veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_email" type="radio" value="Varias veces a la semana">
+                                Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_email" type="radio" value="Varias veces al día"> Varias
+                                veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_email" type="radio" value="Varias veces por hora">
+                                Varias
+                                veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Obtener indicaciones o usar el GPS<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_gps" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_gps" type="radio" value="Varias veces al mes"> Varias
+                                veces
+                                al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_gps" type="radio" value="Varias veces a la semana">
+                                Varias
+                                veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_gps" type="radio" value="Varias veces al día"> Varias
+                                veces
+                                al día
+                            </th>
+                            <th class=""><input name="sec7_movil_gps" type="radio" value="Varias veces por hora"> Varias
+                                veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Navegar por la red<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_red" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_red" type="radio" value="Varias veces al mes"> Varias
+                                veces
+                                al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_red" type="radio" value="Varias veces a la semana">
+                                Varias
+                                veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_red" type="radio" value="Varias veces al día"> Varias
+                                veces
+                                al día
+                            </th>
+                            <th class=""><input name="sec7_movil_red" type="radio" value="Varias veces por hora"> Varias
+                                veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Escuchar música<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_musica" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_musica" type="radio" value="Varias veces al mes">
+                                Varias
+                                veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_musica" type="radio" value="Varias veces a la semana">
+                                Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_musica" type="radio" value="Varias veces al día">
+                                Varias
+                                veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_musica" type="radio" value="Varias veces por hora">
+                                Varias
+                                veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Tomar fotos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_fotos" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_fotos" type="radio" value="Varias veces al mes"> Varias
+                                veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_fotos" type="radio" value="Varias veces a la semana">
+                                Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_fotos" type="radio" value="Varias veces al día"> Varias
+                                veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_fotos" type="radio" value="Varias veces por hora">
+                                Varias
+                                veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Leer las noticias<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_noticias" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_noticias" type="radio" value="Varias veces al mes">
+                                Varias
+                                veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_noticias" type="radio"
+                                    value="Varias veces a la semana">
+                                Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_noticias" type="radio" value="Varias veces al día">
+                                Varias
+                                veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_noticias" type="radio" value="Varias veces por hora">
+                                Varias veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Grabar videos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_grabar_videos" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_grabar_videos" type="radio"
+                                    value="Varias veces al mes">
+                                Varias veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_grabar_videos" type="radio"
+                                    value="Varias veces a la semana"> Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_grabar_videos" type="radio"
+                                    value="Varias veces al día">
+                                Varias veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_grabar_videos" type="radio"
+                                    value="Varias veces por hora">
+                                Varias veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Ver videos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_ver_videos" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_ver_videos" type="radio" value="Varias veces al mes">
+                                Varias veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_ver_videos" type="radio"
+                                    value="Varias veces a la semana">
+                                Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_ver_videos" type="radio" value="Varias veces al día">
+                                Varias veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_ver_videos" type="radio" value="Varias veces por hora">
+                                Varias veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Usar aplicaciones (para cualquier propósito)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_app" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_app" type="radio" value="Varias veces al mes"> Varias
+                                veces
+                                al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_app" type="radio" value="Varias veces a la semana">
+                                Varias
+                                veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_app" type="radio" value="Varias veces al día"> Varias
+                                veces
+                                al día
+                            </th>
+                            <th class=""><input name="sec7_movil_app" type="radio" value="Varias veces por hora"> Varias
+                                veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Mensajería (mensajes de texto, chats de texto, WhatsApp, etc.)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_mensajeria" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_mensajeria" type="radio" value="Varias veces al mes">
+                                Varias veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_mensajeria" type="radio"
+                                    value="Varias veces a la semana">
+                                Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_mensajeria" type="radio" value="Varias veces al día">
+                                Varias veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_mensajeria" type="radio" value="Varias veces por hora">
+                                Varias veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Comunicación en vivo (llamadas telefónicas, facetime, videollamada)s<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_movil_comunicacion" type="radio" value="Nunca"> Nunca</th>
+                            <th class=""><input name="sec7_movil_comunicacion" type="radio" value="Varias veces al mes">
+                                Varias veces al mes
+                            </th>
+                            <th class=""><input name="sec7_movil_comunicacion" type="radio"
+                                    value="Varias veces a la semana"> Varias veces a la semana
+                            </th>
+                            <th class=""><input name="sec7_movil_comunicacion" type="radio" value="Varias veces al día">
+                                Varias veces al día
+                            </th>
+                            <th class=""><input name="sec7_movil_comunicacion" type="radio"
+                                    value="Varias veces por hora">
+                                Varias veces por hora
+                            </th>
+                        </tr>
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Ahora quisiéramos que nos indicara qué tan seguro está de completar las siguientes
+                        tareas en su teléfono móvil.<br />
+
+                        Siendo 1 Muy desconfiado, 3 Neutral y 5 Muy confiado.</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        Leer correos electrónicos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_email" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_email" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_email" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_email" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_email" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Obtener indicaciones o usar el GPS<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_gps" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_gps" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_gps" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_gps" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_gps" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Navegar por la red<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Escuchar música<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_red" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Consultar las noticias<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_noticias" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_noticias" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_noticias" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_noticias" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_noticias" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Grabar videos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_grabar_videos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_grabar_videos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_grabar_videos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_grabar_videos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_grabar_videos" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Ver videos<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_ver_videos" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_ver_videos" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_ver_videos" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_ver_videos" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_ver_videos" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Usar aplicaciones (para cualquier propósito)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_app" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_app" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_app" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_app" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_app" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Mensajería (mensajes de texto, chats de texto, WhatsApp, etc.)<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_mensajeria" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_mensajeria" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_mensajeria" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_mensajeria" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_mensajeria" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        Comunicación en vivo (llamadas telefónicas, facetime, videollamada)s<br /><br />
+                        <tr>
+                            <th class=""><input name="sec7_completar_comunicacion" type="radio" value="1"> 1</th>
+                            <th class=""><input name="sec7_completar_comunicacion" type="radio" value="2"> 2</th>
+                            <th class=""><input name="sec7_completar_comunicacion" type="radio" value="3"> 3</th>
+                            <th class=""><input name="sec7_completar_comunicacion" type="radio" value="4"> 4</th>
+                            <th class=""><input name="sec7_completar_comunicacion" type="radio" value="5"> 5</th>
+                        </tr>
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 8 Preguntas acerca de su salud auditiva</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Es usted sordo/a o tiene problemas de audición?<br /><br />
+                        <input name="sec8_auditiva" type="radio" value="si"> si <br />
+                        <!-- mostrar mas -->
+                        <input name="sec8_auditiva" type="radio" value="no"> no <br />
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 9 Preguntas sobre usted y el hogar</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Usted vive en Costa Rica?<br /><br />
+                        <input name="sec9_hogar" type="radio" value="si"> si <br />
+                        <input name="sec9_hogar" type="radio" value="no"> no <br />
+                        <!-- mostrar mas -->
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Usted vive en Costa Rica?<br /><br />
+                        <input name="sec9_tiempo_cr" type="radio" value="Menos de un año"> Menos de un año <br />
+                        <input name="sec9_tiempo_cr" type="radio" value="1 año a 5 años"> 1 año a 5 años <br />
+                        <input name="sec9_tiempo_cr" type="radio" value="6 años a 10 años"> 6 años a 10 años <br />
+                        <input name="sec9_tiempo_cr" type="radio" value="11 años a 20 años"> 11 años a 20 años <br />
+                        <input name="sec9_tiempo_cr" type="radio" value="Más de 20 años"> Más de 20 años <br />
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 10 Preguntas Demográficas</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Cuál de las siguientes opciones describe mejor su género?<br /><br />
+                        <input name="sec10_genero" type="radio" value="Masculino"> Masculino <br />
+                        <input name="sec10_genero" type="radio" value="Femenino"> Femenino <br />
+                        <input name="sec10_genero" type="radio" value="otro"> otro <br />
+                        <input name="sec10_genero" type="radio" value="Prefiero no contestar"> Prefiero no contestar
+                        <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Cuál de las siguientes opciones describe mejor su raza? (marque todas las que
+                        apliquen):<br /><br />
+                        <input name="sec10_raza" type="checkbox" value="Indígena"> Indígena <br />
+                        <input name="sec10_raza" type="checkbox" value="Negro(a) o afrodescendiente"> Negro(a) o
+                        afrodescendiente <br />
+                        <input name="sec10_raza" type="checkbox" value="Mulato(a)"> Mulato(a) <br />
+                        <input name="sec10_raza" type="checkbox" value="Chino(a)"> Chino(a) <br />
+                        <input name="sec10_raza" type="checkbox" value="Mestizo(a)"> Mestizo(a) <br />
+                        <input name="sec10_raza" type="checkbox" value="Blanco(a)"> Blanco(a) <br />
+                        <input name="sec10_raza" type="checkbox" value="Ninguna"> Ninguna <br />
+                        <input name="sec10_raza" type="checkbox" value="No responde"> No responde <br />
+                        <input name="sec10_raza" type="checkbox" value="Otro"> Otro <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Qué nivel describe mejor su grado de educación?<br /><br />
+                        <input name="sec10_educacion" type="radio" value="Ningún grado"> Ningún grado <br />
+                        <input name="sec10_educacion" type="radio" value="Enseñanza especial"> Enseñanza especial <br />
+                        <input name="sec10_educacion" type="radio" value="Primaria"> Primaria <br />
+                        <input name="sec10_educacion" type="radio" value="Secundaria académica"> Secundaria académica
+                        <br />
+                        <input name="sec10_educacion" type="radio" value="Secundaria técnica"> Secundaria técnica <br />
+                        <input name="sec10_educacion" type="radio" value="Parauniversitaria"> Parauniversitaria
+                        <br />
+                        <input name="segc10_educacion" type="radio" value="Universitaria"> Universitaria <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Cómo describe el lugar donde vive actualmente?<br /><br />
+                        <input name="sec10_vivienda_actual" type="radio" value="Vivienda propia"> Vivienda propia <br />
+                        <input name="sec10_vivienda_actual" type="radio" value="Vivienda prestada"> Vivienda prestada
+                        <br />
+                        <input name="sec10_vivienda_actual" type="radio" value="Vivienda alquilada"> Vivienda alquilada
+                        <br />
+                        <input name="sec10_vivienda_actual" type="radio" value="Otra"> Otra <br />
+                        <!-- mostrar mas -->
+
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Posee su familia un vehículo de motor?<br /><br />
+                        <input name="sec10_motor" type="radio" value="Si"> Si <br />
+                        <input name="sec10_motor" type="radio" value="No"> No <br />
+                    </p>
+                </div>
+                <div class="tab_s">
+                    <h2>Sección 11 Percepciones de uso de ¡mZAP!<br />
+
+                        Para finalizar, le estaremos realizando unas preguntas sobre la aplicación móvil ¡mZAP!</h2>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Cuál de estas opciones describe mejor cómo usaría ¡mZAP!? (Por favor seleccione todas las
+                        respuestas válidas)<br /><br />
+                        <input name="sec11_usaria" type="checkbox" value="Identificar e informar un riesgo"> Identificar
+                        e
+                        informar un riesgo <br />
+                        <input name="sec11_usaria" type="checkbox" value="Para proporcionar una resolución a un riesgo">
+                        Para proporcionar una resolución a un riesgo <br />
+                        <input name="sec11_usaria" type="checkbox" value="Para compartir el informe(s) con amigos"> Para
+                        compartir el informe(s) con amigos <br />
+                        <input name="sec11_usaria" type="checkbox" value="Verificar riesgos y desafíos en el mapa">
+                        Verificar riesgos y desafíos en el mapa <br />
+                        <input name="sec11_usaria" type="checkbox" value="No lo sé todavía"> No lo sé todavía <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿De cuál de los siguientes problemas se ve usted informando más en ¡mZAP!? (Por favor seleccione
+                        todas las respuestas válidas)<br /><br />
+                        <input name="sec11_informando" type="checkbox" value="Mosquitos"> Mosquitos <br />
+                        <input name="sec11_informando" type="checkbox" value="Basura"> Basura <br />
+                        <input name="sec11_informando" type="checkbox" value="Roedores (ratas)"> Roedores (ratas) <br />
+                        <input name="sec11_informando" type="checkbox" value="Aguas contaminadas"> Aguas contaminadas
+                        <br />
+                        <input name="sec11_informando" type="checkbox" value="Aguas estancadas"> Aguas estancadas)
+                        <br />
+                        <input name="sec11_informando" type="checkbox" value="Falta de agua"> Falta de agua <br />
+                        <input name="sec11_informando" type="checkbox" value="Moscas"> Moscas <br />
+                        <input name="sec11_informando" type="checkbox" value="Pesticidas/Químicos"> Pesticidas/Químicos
+                        <br />
+                        <input name="sec11_informando" type="checkbox" value="Inundaciones"> Inundaciones <br />
+                        <input name="sec11_informando" type="checkbox" value="Carreteras en mal estado"> Carreteras en
+                        mal
+                        estado <br />
+                        <input name="sec11_informando" type="checkbox" value="Incendios forestales"> Incendios
+                        forestales
+                        <br />
+                        <input name="sec11_informando" type="checkbox" value="Neblina"> Neblina <br />
+                        <input name="sec11_informando" type="checkbox" value="Lluvias torrenciales"> Lluvias
+                        torrenciales
+                        <br />
+                        <input name="sec11_informando" type="checkbox" value="Tormentas"> Tormentas <br />
+                        <input name="sec11_informando" type="checkbox" value="Erupciones volcánicas"> Erupciones
+                        volcánicas
+                        <br />
+                        <input name="sec11_informando" type="checkbox" value="Sequía"> Sequía <br />
+                        <input name="sec11_informando" type="checkbox" value="Deslizamientos"> Deslizamientos <br />
+                        <input name="sec11_informando" type="checkbox" value="Terremotos"> Terremotos <br />
+                        <input name="sec11_informando" type="checkbox" value="Calor/Frío excesivo"> Calor/Frío excesivo
+                        <br />
+                        <input name="sec11_informando" type="checkbox" value="Perros o gatos realengos"> Perros o gatos
+                        realengos <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Con qué frecuencia cree usted que utilizará ¡mZAP!?<br /><br />
+                        <input name="sec11_frecuencia" type="radio" value="Nunca"> Nunca <br />
+                        <input name="sec11_frecuencia" type="radio" value="Varias veces al mes"> Varias veces al mes
+                        <br />
+                        <input name="sec11_frecuencia" type="radio" value="Varias veces a la semana"> Varias veces a la
+                        semana <br />
+                        <input name="sec11_frecuencia" type="radio" value="Varias veces al día"> Varias veces al día
+                        <br />
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Qué tan probable piensa usted que colaboraría con otras personas en el uso de ¡mZAP! o en
+                        ayudar a
+                        solucionar los problemas ambientales que se generen en ¡mZAP!?<br /><br />
+                        <input name="sec11_solucionar" type="radio" value="No es probable"> No es probable <br />
+                        <input name="sec11_solucionar" type="radio" value="Algo probable"> Algo probable <br />
+                        <input name="sec11_solucionar" type="radio" value="Neutral/No estoy seguro"> Neutral/No estoy
+                        seguro
+                        <br />
+                        <input name="sec11_solucionar" type="radio" value="Probable"> Probable <br />
+                        <input name="sec11_solucionar" type="radio" value="Muy probable"> Muy probable <br />
+
+                    </p>
+                    <p style="text-align: left; color: black;"><br />
+                        ¿Tiene cualquier comentario, duda, o pregunta sobre cualquiera de nuestras
+                        preguntas?<br /><br />
+                        <textarea cols="20" name="comentarios" rows="5">Escribe aquí tus comentarios</textarea>
+
+                    </p>
+                </div>
+
+                <div class="tab_s">
+                    <h2>MUCHAS GRACIAS</h2>
+                    <!--                <input type="submit" value="Submit">-->
+                    <p style="text-align: left; color: black;"><br />
+                    <div id="htmlText"><br /></div>
+                    </p>
+                </div>
+
+                <div style="overflow:auto;">
+                    <div style="float:right;">
+                        <button id="prevBtn" onclick="nextPrev(-1)" type="button">Anterior</button>
+                        <button id="nextBtn" onclick="nextPrev(1)" type="button">Siguiente</button>
+                        <!--                    <button type="button" style="background-color: yellowgreen;" id="finBtn" onclick="document.getElementById('myform').submit();">Finalizar</button>-->
+                        <button type="button" style="background-color: yellowgreen;" id="finBtn"
+                            onclick="encuestaSubmit();">Finalizar</button>
+                    </div>
+                </div>
+                <!-- Circles which indicates the steps of the form: -->
+                <div style="text-align:center;margin-top:40px;">
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/jquery-1.10.1.min.js" type="text/javascript"></script>
+    <script src="js/jquery.validate.min.js" type="text/javascript" async></script>
+    <script src="js/framework7.js" type="text/javascript"></script>
+    <script src="js/mzapcr.js?v=10" type="text/javascript" async></script>
+    <script src="js/my-app.js?v=1" type="text/javascript" async></script>
+    <script src="js/function.js" type="text/javascript" async></script>
+    <script src="js/jquery.swipebox.js" type="text/javascript" async></script>
+
+    <script>
+        let currentTab = 0; // Current tab is set to be the first tab (0)
+        showTab(currentTab); // Display the current tab
+
+        function showTab(n) {
+            console.log("Voy por..." + n);
+
+            var x = document.getElementsByClassName("tab_s");
+            x[n].style.display = "block";
+            //... and fix the Previous/Next buttons:
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+                document.getElementById("finBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+                document.getElementById("nextBtn").style.display = "inline";
+
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").style.display = "none";
+                document.getElementById("finBtn").style.display = "inline";
+                // document.getElementById("nextBtn").innerHTML = "Finalizar";
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Siguiente";
+                document.getElementById("finBtn").style.display = "none";
+            }
+            // window.scrollTo(0, 0);
+            window.scroll(0, 0);
+            //... and run a function that will display the correct step indicator:
+            fixStepIndicator(n)
+        }
+
+        function nextPrev(n) {
+            // This function will figure out which tab to display
+            let x = document.getElementsByClassName("tab_s");
+            // Exit the function if any field in the current tab is invalid:
+            if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            // if you have reached the end of the form...
+            // console.log(currentTab);
+            // console.log(x.length);
+            if (currentTab >= x.length) {
+                // ... the form gets submitted:
+
+
+                // test submit form
+                $.ajax({
+                    async: true,
+                    type: "POST",
+                    url: "logica/logicaEncuesta.php",
+                    data: "action=SubirEvento&id_categoria=" + id_categoria + "&imagen=" + imagen + "&nombreProducto=" + nombreProducto + "&descripcion=" + descripcion + "&miIP=" + miIP + "&latitude=" + milatitude + "&longitude=" + milongitude + "&iso=" + usuario.iso + "&id_usuario=" + usuario.id,
+                    beforeSend: function (objeto) {
+                        myApp.showPreloader('Guardando...');
+                    },
+                    success: function (data) {
+                        myApp.hidePreloader();
+                        if (data == 1) {
+                            alert("Producto Insertado Correctamente");
+                            obtieneCantidadProductos(usuario.id);
+                            mainView.router.reloadPage('categorias.html');
+                            //ObtieneEvento(id_categoria);
+                        } else {
+                            alert("Surgió un problema. Intenta nuevamente.")
+                        }
+                        //document.getElementById('photo').src = "images/camera.jpg";
+                    }
+                });
+
+                // resetear formulario
+                $('#myForm').trigger("reset");
+
+
+                currentTab = 0;
+                showTab(currentTab);
+
+                // myApp.closeModal('.popup-encuesta');
+                return false;
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+            window.scroll(0, 0);
+        }
+
+        function validateForm() {
+            // This function deals with validation of the form fields
+            let x, y, i, valid = true;
+            x = document.getElementsByClassName("tab_s");
+            y = x[currentTab].getElementsByTagName("input");
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+                // If a field is empty...
+                if (y[i].value == "") {
+                    // add an "invalid" class to the field:
+                    y[i].className += " invalid";
+                    // and set the current valid status to false
+                    valid = false;
+                }
+            }
+
+            // verificar la edad
+            let edad = $('input[name="sec0_edad"]:checked').val();
+            if (edad == 'edad_-18' || edad == undefined) {
+                valid = false;
+                myApp.alert('Debes tener al menos 18 años para poder utilizar este app.', 'Atención!');
+            }
+
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+
+            return valid; // return the valid status
+        }
+
+        function fixStepIndicator(n) {
+            // This function removes the "active" class of all steps...
+            let i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class on the current step:
+            x[n].className += " active";
+        }
+
+        function encuestaSubmit() {
+            console.log("encuestaSubmit()....");
+            var encuestaform = $('#encuestaForm').serialize();
+            // console.log($encuestaform.serialize());
+            console.log("Serialized: " + encuestaform);
+
+            // myApp.showPreloader("Cargando países....");
+            $.ajax(
+                {
+                    async: true,
+                    type: "POST",
+                    url: "logica/logicaEncuesta.php",
+                    data: "data=" + encuestaform,
+                    beforSend: function (data) {
+                        myApp.showPreloader("Cargando....");
+                    },
+                    success: function (data) {
+                        console.log(data);
+
+
+                    }
+                });
+        }
+
+    </script>
+
+</body>
+
+
+<script>
+    function clickme() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'mZAP! (Zancudos, Ambiente y Protección)',
+                text: 'Desarrollando estrategias móviles para el control de enfermedades transmititdas por insectos en comunidades de Costa Rica.',
+                url: 'https://mzapcr.com/'
+            })
+                .then(() => console.log('Share complete'))
+            // .error((error) => console.error('Could not share at this time', error))
+        } else {
+            shareDialog.classList.add('is-open');
+        }
+    };
+
+    function reportar_evento() {
+        myApp.showPreloader('Enviando reporte...');
+        myApp.hidePreloader();
+        myApp.alert('Se ha enviado el reporte. Muchas gracias por su colaboración.', 'Atención');
+        $('#text-reportar-evento').val('');
+        myApp.closeModal('.popup-reportar-evento');
+    }
+
+    function reportar_usuario() {
+        myApp.showPreloader('Enviando reporte...');
+        myApp.hidePreloader();
+        myApp.alert('Se ha enviado el reporte. Muchas gracias por su colaboración.', 'Atención');
+        $('#text-reportar-usuario').val('');
+        myApp.closeModal('.popup-reportar-usuario');
+    }
+
+    function cerrar_sesion() {
+        dbn.delete();
+        window.location.replace("index.html");
+    }
+
+    function muestra_tyc() {
+        myApp.popup('.popup-tyc');
+    }
+
+
+</script>
+
+<script src="js/main.js"></script>
+
+</html>
